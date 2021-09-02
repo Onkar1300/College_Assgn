@@ -176,29 +176,39 @@ public class Assignment_1 {
 		}
         pt.getPoolTable(poolTabLine);
 		//Printing The Intermediate Code:
+		System.out.println("___________________________");
+		System.out.println("\tMACHINE CODE ");
+		System.out.println("___________________________");
         String line2=null;
 		int j = 0;
-		
 		int pooltabcheck=pt.PoolTab[j];
 		line2 = bufferedReader2.readLine();
 		while((line2 = bufferedReader2.readLine()) != null){
+			//Declaring boolean for flagcheck
 			Boolean x = false;
-			
+			Boolean y = false;
 			String[] codes = line2.split("\t");
 			// System.out.println(codes[1]);
+			for (int i = 0; i <= 10; i++){
+				if(codes[1].equals(p2.IS[i])){
+					System.out.print("0"+i+"\t");
+				}
+			}
 			if(codes[1]=="DS"||codes[1]=="DC"){
 				continue;
 			}
-			if(codes[1]=="STOP"){
+			
+			if(codes[1]=="STOP"||codes[1]=="END"){
 				break;
 			}
-			System.out.print("+" + "\t");
 			if(codes.length==2){
 				if(codes[1]=="LTORG"){
+					// Literal Table addresses
 					System.out.print("00"+"\t00"+"\t");
 					for(int i =0;i<pooltabcheck;i++){
 						System.out.print(lt.LitTab[i][0]);
 					}
+					//Increment Pooltable Index
 					pooltabcheck=pt.PoolTab[j++];
 				}
 			}
@@ -213,24 +223,51 @@ public class Assignment_1 {
 					}
 				}
 				else{
-					for (int i = 0; i <= 10; i++){
-						if(codes[1].equals(p2.IS[i])){
-							System.out.print("0"+i+"\t");
-						}
-					}
-					
-					if(codes[2]!=null){
+					//for more than 2 references
+					String[] codes2 = codes[2].split(", ");
+					if(codes2.length<2){
+						//Checking for Registers
 						for (int i = 1; i <= 4; i++){
-							if(codes[1].equals(p2.reg[i])){
-								x =true;
+							if(codes[2].equals(p2.reg[i])){
+								x =false;
 								System.out.print("0"+i+"\t");
 							}
 						}
 						if(!x){
 							System.out.print("00"+"\t");
 						}
+						//Checking for symbols
 						for(int i= 0;i<symTabLine;i++){
-							if(codes[1].equalsIgnoreCase(sp.SymbolTab[i][0])){
+							if(codes[2].equalsIgnoreCase(sp.SymbolTab[i][0])){
+								System.out.print(sp.SymbolTab[i][1]);
+							}
+						}
+					}
+					else{
+						//Checking for Registers
+						for (int i = 1; i <= 4; i++){
+							if(codes2[0].equals(p2.reg[i])){
+								x =false;
+								System.out.print("0"+i+"\t");
+							}
+						}
+						for (int i = 1; i <= 4; i++){
+							if(codes2[1].equals(p2.reg[i])){
+								y = false;
+								System.out.print("0"+i+"\t");
+							}
+						}
+						if(x||y){
+							System.out.print("00"+"\t");
+						}
+						//Checking for symbols
+						for(int i= 0;i<symTabLine;i++){
+							if(codes2[0].equalsIgnoreCase(sp.SymbolTab[i][0])){
+								System.out.print(sp.SymbolTab[i][1]);
+							}
+						}
+						for(int i= 0;i<symTabLine;i++){
+							if(codes2[1].equalsIgnoreCase(sp.SymbolTab[i][0])){
 								System.out.print(sp.SymbolTab[i][1]);
 							}
 						}
